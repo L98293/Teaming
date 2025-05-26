@@ -22,5 +22,7 @@ public class Project {
     @JoinColumn(name = "leader_id")
     private Member leader;
 
-    public Project() {}
+    public Project() {
+
+    }
 }
