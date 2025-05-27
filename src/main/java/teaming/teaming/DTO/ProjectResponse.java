@@ -1,6 +1,6 @@
 package teaming.teaming.DTO;
 
-import teaming.teaming.Domain.Project;
+import teaming.teaming.domain.Project;
 
 public record ProjectResponse(
         Long id,

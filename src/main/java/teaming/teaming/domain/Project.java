@@ -2,27 +2,23 @@ package teaming.teaming.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
-@Entity
 @Getter
-@Setter
+@Entity
+@SuperBuilder
+@NoArgsConstructor
 public class Project {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Setter
     private String title;
-    private String description;
-
+    @Setter
+    private String content;
     @ManyToOne
     @JoinColumn(name = "leader_id")
     private Member leader;
-
-    public Project() {
-
-    }
 }
