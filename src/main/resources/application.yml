@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: [데이터베이스 링크]
-    username: [데이터베이스 아이디]
-    password: [데이터베이스 비밀번호]
+    url: jdbc:mysql://localhost:3306/samdi
+    username: root
+    password: Pomeranian1!
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
