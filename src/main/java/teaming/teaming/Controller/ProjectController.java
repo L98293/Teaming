@@ -48,9 +48,9 @@ public class ProjectController {
     }
 
     // CRUD중 U부분 -> 프로젝트 수정
-    @PatchMapping()
-    public Project updateProject(@RequestBody UpdateProjectRequest request) {
-        return projectService.updateProject(request);
+    @PatchMapping("/{id}")
+    public Project updateProject(@PathVariable Long id, @RequestBody UpdateProjectRequest request) {
+        return projectService.updateProject(id, request);
     }
 
     // CRUD중 D부분 -> 프로젝트 삭제

@@ -36,12 +36,13 @@ public class ProjectService {
     }
 
     // CRUD중 U(프로젝트 수정)
-    public Project updateProject(UpdateProjectRequest request) {
-        Project p = projectRepository.findById(request.id()).orElseThrow(()
-        -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
-        p.setContent(request.content());
-        projectRepository.save(p);
-        return p;
+    public Project updateProject(Long id, UpdateProjectRequest request) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 입니다."));
+        project.setTitle(request.title());
+        project.setContent(request.content());
+
+        return projectRepository.save(project);
     }
 
     // CRUD중 D(프로젝트 삭제)
