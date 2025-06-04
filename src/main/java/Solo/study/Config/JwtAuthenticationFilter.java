@@ -44,12 +44,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-
-    /**
-     * 쿠키에서 "token" 이름의 JWT 토큰을 추출
-     * @param request HttpServletRequest
-     * @return 토큰 문자열 또는 null
-     */
     protected String resolveToken(HttpServletRequest request) {
         // Authorization 헤더 대신 쿠키에서 토큰을 읽도록 변경
         Cookie[] cookies = request.getCookies();
@@ -63,6 +57,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 }
-
-// 참고: 로그인 컨트롤러에서 JWT 토큰을 생성한 후 HttpOnly, Secure 플래그가 설정된 쿠키에 토큰을 저장하여 응답해야 합니다.
-// 이 부분은 로그인 컨트롤러 코드에 추가해야 합니다.
