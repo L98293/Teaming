@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>사람 구하는 게시판</title>
+  <!-- Pretendard 웹폰트 (저작권 무료) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --main-bg: #f5f7fa;
+      --header-bg: #223a5e;
+      --primary: #4a90e2;
+      --card-bg: #fff;
+      --card-shadow: 0 2px 12px rgba(34,58,94,0.07);
+      --border-radius: 16px;
+      --text-main: #222;
+      --text-sub: #888;
+      --badge-job: #f67280;
+      --badge-hire: #6c5b7b;
+      --transition: 0.2s cubic-bezier(.4,0,.2,1);
+    }
+    body {
+      font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+      background: var(--main-bg);
+      margin: 0;
+      color: var(--text-main);
+    }
+    header {
+      background: var(--header-bg);
+      color: #fff;
+      padding: 32px 0 20px 0;
+      text-align: center;
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto 0 auto;
+      padding: 0 18px 40px 18px;
+    }
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .board-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--header-bg);
+      letter-spacing: 1px;
+    }
+    .write-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(74,144,226,0.08);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background var(--transition);
+    }
+    .write-btn:hover {
+      background: #3575b9;
+    }
+    .write-modal-bg {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(34,58,94,0.18);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .write-modal-bg.active {
+      display: flex;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;}
+      to { opacity: 1;}
+    }
+    .write-modal {
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 32px 28px 24px 28px;
+      min-width: 320px;
+      max-width: 95vw;
+      width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      animation: fadeIn 0.2s;
+    }
+    .close-btn {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .close-btn svg {
+      width: 22px; height: 22px;
+      stroke: #aaa;
+      transition: stroke 0.2s;
+    }
+    .close-btn:hover svg {
+      stroke: var(--primary);
+    }
+    .write-modal label {
+      font-weight: 600;
+      margin-bottom: 2px;
+      font-size: 1rem;
+    }
+    .write-modal input, .write-modal textarea, .write-modal select {
+      width: 100%;
+      font-size: 1rem;
+      padding: 9px 12px;
+      border: 1.5px solid #e3e6ee;
+      border-radius: 7px;
+      background: #f9fafc;
+      font-family: inherit;
+      margin-bottom: 4px;
+      transition: border var(--transition);
+      resize: none;
+    }
+    .write-modal input:focus, .write-modal textarea:focus, .write-modal select:focus {
+      border-color: var(--primary);
+      outline: none;
+      background: #fff;
+    }
+    .write-modal button[type="submit"] {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 11px 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background var(--transition);
+    }
+    .write-modal button[type="submit"]:hover {
+      background: #3575b9;
+    }
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      margin-top: 10px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 22px 24px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: cardIn 0.4s forwards;
+    }
+    @keyframes cardIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2px;
+    }
+    .card-title {
+      font-size: 1.13rem;
+      font-weight: 700;
+      color: var(--header-bg);
+      flex: 1;
+      word-break: break-all;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2.5px 13px;
+      border-radius: 12px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: #fff;
+      margin-left: 2px;
+      letter-spacing: 1px;
+    }
+    .badge.job { background: var(--badge-job);}
+    .badge.hire { background: var(--badge-hire);}
+    .card-desc {
+      color: var(--text-main);
+      font-size: 1rem;
+      margin-bottom: 2px;
+      word-break: break-all;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.95rem;
+      color: var(--text-sub);
+    }
+    .card-meta svg {
+      width: 17px; height: 17px;
+      vertical-align: middle;
+      margin-right: 3px;
+      stroke: var(--primary);
+    }
+    .no-post {
+      color: #bbb;
+      text-align: center;
+      padding: 40px 0 20px 0;
+      font-size: 1.1rem;
+    }
+    footer {
+      background: none;
+      color: #aaa;
+      text-align: center;
+      margin: 40px 0 20px 0;
+      font-size: 0.96rem;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 600px) {
+      .container { max-width: 98vw; padding: 0 3vw 40px 3vw;}
+      .write-modal { padding: 20px 8px 14px 8px; min-width: 0; width: 95vw;}
+      .card { padding: 16px 10px 13px 12px;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  사람 구하는 게시판
+</header>
+<div class="container">
+  <div class="board-header">
+    <h2>최신 구인/구직 글</h2>
+    <button class="write-btn" id="openModalBtn">
+      <!-- 연필 SVG 아이콘 -->
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 4.5l-10 10"/><path d="M13.5 2.5a2.121 2.121 0 1 1 3 3l-1.5 1.5-3-3 1.5-1.5z"/><path d="M2 18l4-1-3-3-1 4z"/></svg>
+      글쓰기
+    </button>
+  </div>
+
+  <div class="card-list" id="cardList">
+    <div class="no-post">등록된 글이 없습니다.</div>
+  </div>
+</div>
+
+<!-- 글쓰기 모달 -->
+<div class="write-modal-bg" id="modalBg">
+  <form class="write-modal" id="writeForm" autocomplete="off">
+    <button type="button" class="close-btn" id="closeModalBtn" title="닫기">
+      <!-- X 아이콘 SVG -->
+      <svg viewBox="0 0 22 22" fill="none" stroke-width="2"><line x1="6" y1="6" x2="16" y2="16"/><line x1="16" y1="6" x2="6" y2="16"/></svg>
+    </button>
+    <label for="title">제목</label>
+    <input id="title" type="text" maxlength="30" placeholder="예: 프론트엔드 개발자 구합니다" required />
+    <label for="type">구분</label>
+    <select id="type" required>
+      <option value="" disabled selected>구분 선택</option>
+      <option value="구직자">구직자</option>
+      <option value="구인자">구인자</option>
+    </select>
+    <label for="desc">간단한 소개</label>
+    <textarea id="desc" maxlength="80" rows="2" placeholder="예: React/Next.js 3년차, 원격 근무 희망" required></textarea>
+    <label for="contact">연락처</label>
+    <input id="contact" type="text" maxlength="40" placeholder="이메일 또는 전화번호" required />
+    <button type="submit">등록하기</button>
+  </form>
+</div>
+
+<footer>
+  © 2025 사람 구하는 게시판 | 폰트 Pretendard | 직접 제작 SVG 아이콘 사용
+</footer>
+
+<script>
+  // 게시글 데이터 저장
+  let posts = [];
+
+  // DOM 요소
+  const cardList = document.getElementById('cardList');
+  const openModalBtn = document.getElementById('openModalBtn');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const modalBg = document.getElementById('modalBg');
+  const writeForm = document.getElementById('writeForm');
+
+  // 모달 열기/닫기
+  openModalBtn.onclick = () => {
+    modalBg.classList.add('active');
+    setTimeout(() => document.getElementById('title').focus(), 100);
+  };
+  closeModalBtn.onclick = () => closeModal();
+  modalBg.onclick = (e) => { if (e.target === modalBg) closeModal(); };
+  function closeModal() {
+    modalBg.classList.remove('active');
+    writeForm.reset();
+  }
+
+  // 게시글 렌더링
+  function renderPosts() {
+    cardList.innerHTML = '';
+    if (posts.length === 0) {
+      cardList.innerHTML = '<div class="no-post">등록된 글이 없습니다.</div>';
+      return;
+    }
+    posts.forEach((post, idx) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.animationDelay = `${idx * 0.04}s`;
+      card.innerHTML = `
+          <div class="card-header">
+            <span class="card-title">${escapeHtml(post.title)}</span>
+            <span class="badge ${post.type === '구직자' ? 'job' : 'hire'}">${post.type}</span>
+          </div>
+          <div class="card-desc">${escapeHtml(post.desc)}</div>
+          <div class="card-meta">
+            <span title="연락처">
+              <svg viewBox="0 0 20 20" fill="none" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M6.5 8.5a3.5 3.5 0 0 1 7 0c0 2.5-3.5 6-3.5 6s-3.5-3.5-3.5-6z"/><circle cx="10" cy="8.5" r="1"/></svg>
+              ${escapeHtml(post.contact)}
+            </span>
+            <span title="작성일">| ${post.date}</span>
+          </div>
+        `;
+      cardList.appendChild(card);
+    });
+  }
+
+  // 폼 제출
+  writeForm.onsubmit = function(e) {
+    e.preventDefault();
+    const title = document.getElementById('title').value.trim();
+    const type = document.getElementById('type').value;
+    const desc = document.getElementById('desc').value.trim();
+    const contact = document.getElementById('contact').value.trim();
+    if (!title || !type || !desc || !contact) return;
+
+    const now = new Date();
+    const date = now.getFullYear() + '.' +
+            String(now.getMonth() + 1).padStart(2, '0') + '.' +
+            String(now.getDate()).padStart(2, '0') +
+            ' ' + String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0');
+
+    posts.unshift({
+      title, type, desc, contact, date
+    });
+    renderPosts();
+    closeModal();
+  };
+
+  // XSS 방지용 이스케이프
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, function(m) {
+      return ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[m];
+    });
+  }
+
+  // 최초 렌더링
+  renderPosts();
+</script>
+</body>
+</html>

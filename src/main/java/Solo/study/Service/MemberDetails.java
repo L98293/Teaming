@@ -1,37 +1,35 @@
-package Teaming.Teaming.Service;
+package Solo.study.Service;
 
-import Teaming.Teaming.Entity.User;
+import Solo.study.Entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class MemberDetails implements UserDetails {
-    private User user;
 
-    public MemberDetails(User user) {
-        this.user = user;
+    private final MemberEntity member;
+
+    public MemberDetails(MemberEntity member) {
+        this.member = member;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //사용자의 권한을 반환
-        //ROLE_ADMIN, ROLE_USER
-        return List.of(() -> user.getRole());
+        return List.of(new SimpleGrantedAuthority(member.getRole()));
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return member.getUsername();
     }
 
     @Override
