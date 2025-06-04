@@ -1,15 +1,17 @@
+server:
+  port: 8080
+
 spring:
   application:
-    name: Teaming
+    name: Study
   datasource:
     url: jdbc:mysql://localhost:3306/jwt
     username: test
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: update
-
+    show-sql: true
 jwt:
-  secret: Y3J5cHRvX3NlY3JldF9rZXlfZ2VuZXJhdGVkXzY0X2J5dGVzX2Jhc2U2NAo
+  secret: A9f$2kL#zP!7qWmX@eR8sT1vB6nJ0uIoYpH4

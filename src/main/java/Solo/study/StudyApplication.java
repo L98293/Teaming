@@ -1,13 +1,13 @@
-package Teaming.Teaming;
+package Solo.study;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TeamingApplication {
+public class StudyApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TeamingApplication.class, args);
+		SpringApplication.run(StudyApplication.class, args);
 	}
 
 }

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>JWT 로그인 & 회원가입</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .toggle-btn {
+      background-color: #2196F3;
+      margin-top: 10px;
+    }
+    .toggle-btn:hover {
+      background-color: #1976D2;
+    }
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2 id="form-title">회원가입</h2>
+  <input type="text" id="user-id" placeholder="아이디" />
+  <input type="password" id="user-pw" placeholder="비밀번호" />
+  <button onclick="handleSubmit()" id="submit-btn">회원가입</button>
+  <button onclick="toggleForm()" class="toggle-btn">로그인 화면으로</button>
+  <div class="message" id="message"></div>
+</div>
+
+<script>
+  let isLogin = false; // 기본은 로그인 화면
+
+  function toggleForm() {
+    isLogin = !isLogin;
+    document.getElementById("form-title").innerText = isLogin ? "로그인" : "회원가입";
+    document.getElementById("submit-btn").innerText = isLogin ? "로그인" : "회원가입";
+    document.querySelector(".toggle-btn").innerText = isLogin ? "회원가입 화면으로" : "로그인 화면으로";
+    document.getElementById("message").innerText = "";
+  }
+
+  async function handleSubmit() {
+    const username = document.getElementById("user-id").value.trim();
+    const pw = document.getElementById("user-pw").value.trim();
+    const message = document.getElementById("message");
+
+    if (!username || !pw) {
+      message.innerText = "아이디와 비밀번호를 입력해주세요.";
+      return;
+    }
+
+    const url = isLogin ? "/member/login" : "/member/signup";
+    const bodyData = { username, password: pw };
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(bodyData)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        message.style.color = "red";
+        message.innerText = data.message || "오류가 발생했습니다.";
+        return;
+      }
+
+      if (isLogin) {
+        // 토큰은 서버에서 HttpOnly 쿠키로 설정되므로 따로 저장하지 않음
+        message.style.color = "green";
+        message.innerText = "로그인 성공! 메인 페이지로 이동합니다.";
+
+        // 쿠키 기반 요청: credentials 옵션을 통해 쿠키 포함
+        fetch("/main", {
+          method: "GET",
+          credentials: "include" // 쿠키를 자동으로 포함시킴
+        })
+          .then(res => {
+            if (res.ok) {
+              window.location.href = "/main";
+            } else {
+              message.style.color = "red";
+              message.innerText = "메인 페이지 접근 권한이 없습니다.";
+            }
+          })
+          .catch(err => {
+            console.error("메인 요청 실패:", err);
+            message.style.color = "red";
+            message.innerText = "메인 페이지 요청 중 오류가 발생했습니다.";
+          });
+
+      } else {
+        message.style.color = "green";
+        message.innerText = "회원가입 성공! 로그인 해주세요.";
+        toggleForm(); // 회원가입 후 로그인 폼으로 자동 전환
+      }
+
+    } catch (error) {
+      console.error("요청 실패:", error);
+      message.style.color = "red";
+      message.innerText = "서버 연결에 실패했습니다.";
+    }
+  }
+</script>
+</body>
+</html>

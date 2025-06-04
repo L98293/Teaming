@@ -1,25 +1,26 @@
-package Teaming.Teaming.Service;
+package Solo.study.Service;
 
-import Teaming.Teaming.Repository.MemberRepository;
+import Solo.study.Entity.MemberEntity;
+import Solo.study.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import Teaming.Teaming.Entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.NotActiveException;
+
 @Service
 @RequiredArgsConstructor
 public class MemberDetailsService implements UserDetailsService {
 
-    private final MemberRepository repository;
+    private final MemberRepository memberRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // username을 조회
-        User user = repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다 " + username));
+        MemberEntity member = memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다." + username));
 
-        return new MemberDetails(user);
+        return new MemberDetails(member);
     }
 }

@@ -1,12 +1,12 @@
-package Teaming.Teaming.DTO;
+package Solo.study.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginDTO {
+public class MemberDTO {
+
     private String username;
     private String password;
-    private String githubId;
 }
