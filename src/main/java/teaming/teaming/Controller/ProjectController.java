@@ -7,7 +7,7 @@ import teaming.teaming.DTO.ReadProjectRequest;
 import teaming.teaming.DTO.UpdateProjectRequest;
 import teaming.teaming.domain.Project;
 import teaming.teaming.repository.ProjectRepository;
-import teaming.teaming.ProjectService;
+import teaming.teaming.service.ProjectService;
 
 import java.util.List;
 
