@@ -1,4 +1,4 @@
-package teaming.teaming.DTO;
+package teaming.Teaming.DTO;
 
 public record CreateContentRequest(
 //        Long id,

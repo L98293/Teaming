@@ -1,6 +1,6 @@
-package teaming.teaming.DTO;
+package teaming.Teaming.DTO;
 
-import teaming.teaming.Content;
+import teaming.Teaming.Content;
 
 public record ContentResponse(
         Long id,

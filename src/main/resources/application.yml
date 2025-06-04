@@ -1,11 +1,16 @@
 spring:
   datasource:
-    url: [데이터베이스 링크]
-    username: [데이터베이스 아이디]
-    password: [데이터베이스 비밀번호]
+    url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Seoul
+    username: root
+    password: altMember
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL8Dialect
+      show-sql: true
+      format_sql: true
 server:
   port: 8080
