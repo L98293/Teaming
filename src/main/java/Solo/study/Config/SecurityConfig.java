@@ -49,9 +49,9 @@ public class SecurityConfig {
                 // 로그인/회원가입은 인증 없이 접근 가능
                 .requestMatchers("/", "/fonts/**", "/member/login", "/member/signup").permitAll()
                 // 관리자 페이지는 ADMIN 권한 필요
-                .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers("/admin").hasRole(ADMIN)
                 // 메인 페이지는 USER 또는 ADMIN 권한 필요
-                .requestMatchers("/main").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/main").hasAnyRole(USER, ADMIN)
                 // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()
             )

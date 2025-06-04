@@ -39,11 +39,11 @@ public class LoginController {
 
         // JWT 토큰을 HttpOnly 쿠키에 설정하여 응답 (클라이언트에서 접근 불가능하도록 보안 강화)
         ResponseCookie cookie = ResponseCookie.from("token", token)
-            .httpOnly(true) // JavaScript에서 접근 불가능
-            .secure(true) // HTTPS 환경에서만 전송됨 (운영 환경 기준)
-            .path("/") // 모든 경로에 대해 쿠키 전송
-            .maxAge(3600) // 쿠키 유효 시간: 1시간
-            .sameSite("Strict") // CSRF 방지 설정
+            .httpOnly(true)
+            .secure(true)  // changed from true to false for local development
+            .path("/")
+            .maxAge(3600)
+            .sameSite("Strict")
             .build();
 
         return ResponseEntity.ok()

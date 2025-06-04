@@ -12,7 +12,7 @@ public class MainController {
         return "Login";
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/main")
     public String main() {
         return "main";
