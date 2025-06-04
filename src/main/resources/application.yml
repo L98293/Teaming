@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/
-    username:
-    password:
+    url: jdbc:mysql://localhost:3306/samdi
+    username: root
+    password: Pomeranian1!
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
